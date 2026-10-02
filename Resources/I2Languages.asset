@@ -1,0 +1,224 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0b0c553be8edd4682e9180fdd13e37, type: 3}
+  m_Name: I2Languages
+  m_EditorClassIdentifier: 
+  mSource:
+    UserAgreesToHaveItOnTheScene: 0
+    UserAgreesToHaveItInsideThePluginsFolder: 0
+    GoogleLiveSyncIsUptoDate: 1
+    mTerms:
+    - Term: TextMeshFontSmart
+      TermType: 9
+      Description: 
+      Languages:
+      - NotoSans-Medium SDF
+      - NotoSans-Medium SDF
+      - NotoSans-Medium SDF
+      - NotoSans-Medium SDF
+      - NotoSans-Medium SDF
+      - NotoSans-Medium SDF
+      - NotoSansJP-Medium SDF
+      - NotoSansKR-Medium SDF
+      - NotoSans-Medium SDF
+      - NotoSansThai-Medium SDF
+      - NotoSans-Medium SDF
+      - NotoSansSC-Medium SDF
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    - Term: set_language_name
+      TermType: 9
+      Description: 
+      Languages:
+      - English
+      - "Espa\xF1ol"
+      - "Portugu\xEAs"
+      - Deutsch
+      - "Fran\xE7ais"
+      - "\u0440\u0443\u0441\u0441\u043A\u0438\u0439"
+      - "\u65E5\u672C\u8A9E"
+      - "\uC870\uC120\uC5B4"
+      - "Ti\u1EBFng Vi\u1EC7t"
+      - "\u0E44\u0E17\u0E22"
+      - Indonesia
+      - "\u7B80\u4F53\u5B57"
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    - Term: pp_pause
+      TermType: 0
+      Description: 
+      Languages:
+      - Pause
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    - Term: key_level
+      TermType: 0
+      Description: 
+      Languages:
+      - Level {0}
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    - Term: Chu-anh Tung
+      TermType: 0
+      Description: 
+      Languages:
+      - tung
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      - 
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    - Term: Money
+      TermType: 0
+      Description: 
+      Languages:
+      - Money
+      - Dinero
+      - Dinheiro
+      - Geld
+      - Argent
+      - "\u0414\u0435\u043D\u044C\u0433\u0438"
+      - "\u304A\u91D1"
+      - "\uB3C8"
+      - "Ti\u1EC1n"
+      - "\u0E40\u0E07\u0E34\u0E19"
+      - Uang
+      - "\u94B1"
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    - Term: NotoSans-Medium Atlas Material
+      TermType: 0
+      Description: 
+      Languages:
+      - NotoSans-Medium Atlas Material
+      - NotoSans-Medium Atlas Material
+      - NotoSans-Medium Atlas Material
+      - NotoSans-Medium Atlas Material
+      - NotoSans-Medium Atlas Material
+      - NotoSans-Medium Atlas Material
+      - NotoSansJP-Medium Atlas Material
+      - NotoSansKR-Medium Atlas Material
+      - NotoSans-Medium Atlas Material
+      - NotoSansThai-Medium Atlas Material
+      - NotoSans-Medium Atlas Material
+      - NotoSansSC-Medium Atlas Material
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    - Term: NotoSans-Medium Outline Blue
+      TermType: 0
+      Description: 
+      Languages:
+      - NotoSans-Medium Outline Blue
+      - NotoSans-Medium Outline Blue
+      - NotoSans-Medium Outline Blue
+      - NotoSans-Medium Outline Blue
+      - NotoSans-Medium Outline Blue
+      - NotoSans-Medium Outline Blue
+      - NotoSansJP-Medium Outline Blue
+      - NotoSansKR-Medium Outline Blue
+      - NotoSans-Medium Outline Blue
+      - NotoSansThai-Medium Outline Blue
+      - NotoSans-Medium Outline Blue
+      - NotoSansSC-Medium Blue
+      Flags: 000000000000000000000000
+      Languages_Touch: []
+    CaseInsensitiveTerms: 0
+    OnMissingTranslation: 1
+    mTerm_AppName: 
+    mLanguages:
+    - Name: English
+      Code: en
+      Flags: 0
+    - Name: Spanish
+      Code: es
+      Flags: 0
+    - Name: Portuguese
+      Code: pt
+      Flags: 0
+    - Name: German
+      Code: de
+      Flags: 0
+    - Name: French
+      Code: fr
+      Flags: 0
+    - Name: Russian
+      Code: ru
+      Flags: 0
+    - Name: Japanese
+      Code: ja
+      Flags: 0
+    - Name: Korean
+      Code: ko
+      Flags: 0
+    - Name: Vietnamese
+      Code: vi
+      Flags: 0
+    - Name: Thai
+      Code: th
+      Flags: 0
+    - Name: Indonesian
+      Code: id
+      Flags: 0
+    - Name: Simplified Chinese
+      Code: zh-CN
+      Flags: 0
+    IgnoreDeviceLanguage: 0
+    _AllowUnloadingLanguages: 0
+    Google_WebServiceURL: 
+    Google_SpreadsheetKey: 
+    Google_SpreadsheetName: 
+    Google_LastUpdatedVersion: 
+    Google_Password: change_this
+    GoogleUpdateFrequency: 3
+    GoogleInEditorCheckFrequency: 2
+    GoogleUpdateSynchronization: 1
+    GoogleUpdateDelay: 0
+    Assets:
+    - {fileID: 2100000, guid: 81364bfbbf8b9074fbb255b1c8ebd09e, type: 2}
+    - {fileID: 2100000, guid: e4659d857a3d88244956d85c373c769a, type: 2}
+    - {fileID: 2100000, guid: 1f06efdca8b59d6499c451d290ed5e55, type: 2}
+    - {fileID: 2100000, guid: cd1069d951f6c4e4493c3f41f096b5fa, type: 2}
+    Spreadsheet_LocalFileName: V-GameFoundation/_Data/LocalizationI2CSV.csv
+    Spreadsheet_LocalCSVSeparator: ','
+    Spreadsheet_LocalCSVEncoding: utf-8
+    Spreadsheet_SpecializationAsRows: 1
+    Spreadsheet_SortRows: 1

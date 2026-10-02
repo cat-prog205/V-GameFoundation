@@ -1,0 +1,11 @@
+Key,Type,Desc,English,Spanish,Portuguese,German,French,Russian,Japanese,Korean,Vietnamese,Thai,Indonesian,Simplified Chinese
+TextMeshFontSmart,TextMeshPFont,,NotoSans-Medium SDF,NotoSans-Medium SDF,NotoSans-Medium SDF,NotoSans-Medium SDF,NotoSans-Medium SDF,NotoSans-Medium SDF,NotoSansJP-Medium SDF,NotoSansKR-Medium SDF,NotoSans-Medium SDF,NotoSansThai-Medium SDF,NotoSans-Medium SDF,NotoSansSC-Medium SDF
+set_language_name,TextMeshPFont,,English,Español,Português,Deutsch,Français,русский,日本語,조선어,Tiếng Việt,ไทย,Indonesia,简体字
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+pp_pause,,,Pause,,,,,,,,,,,
+key_level,,,Level {0},,,,,,,,,,,
+Chu-anh Tung,,,tung,,,,,,,,,,,
+Money,,,Money,Dinero,Dinheiro,Geld,Argent,Деньги,お金,돈,Tiền,เงิน,Uang,钱
+NotoSans-Medium Atlas Material,,,NotoSans-Medium Atlas Material,NotoSans-Medium Atlas Material,NotoSans-Medium Atlas Material,NotoSans-Medium Atlas Material,NotoSans-Medium Atlas Material,NotoSans-Medium Atlas Material,NotoSansJP-Medium Atlas Material,NotoSansKR-Medium Atlas Material,NotoSans-Medium Atlas Material,NotoSansThai-Medium Atlas Material,NotoSans-Medium Atlas Material,NotoSansSC-Medium Atlas Material
+NotoSans-Medium Outline Blue,,,NotoSans-Medium Outline Blue,NotoSans-Medium Outline Blue,NotoSans-Medium Outline Blue,NotoSans-Medium Outline Blue,NotoSans-Medium Outline Blue,NotoSans-Medium Outline Blue,NotoSansJP-Medium Outline Blue,NotoSansKR-Medium Outline Blue,NotoSans-Medium Outline Blue,NotoSansThai-Medium Outline Blue,NotoSans-Medium Outline Blue,NotoSansSC-Medium Blue

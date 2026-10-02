@@ -1,0 +1,30 @@
+{
+    "name": "VContainerGameFoundation",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Addressables",
+        "MessagePipe",
+        "MessagePipe.VContainer",
+        "UniTask.Addressables",
+        "UnityEngine.UI",
+        "VContainer",
+        "UniTask",
+        "Unity.ResourceManager",
+        "UniTask.DOTween",
+        "DOTween.Modules",
+        "Google.Play.Review",
+        "Google.Play.Common",
+        "Lofelt.NiceVibrations",
+        "I2Localization.Scripts",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
