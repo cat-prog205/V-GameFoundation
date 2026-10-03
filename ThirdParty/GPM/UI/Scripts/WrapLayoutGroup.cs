@@ -227,8 +227,8 @@ public class WrapLayoutGroup : LayoutGroup
         }
         sumCross += (crossAxis == 0 ? padding.horizontal : padding.vertical);
 
-        base.SetLayoutInputForAxis(maxMain, maxMain, 0, mainAxis);
-        base.SetLayoutInputForAxis(sumCross, sumCross, 0, crossAxis);
+        base.SetLayoutInputForAxis(maxMain, LayoutUtility.DefaultMaxSize, maxMain, 0, mainAxis);
+        base.SetLayoutInputForAxis(sumCross, LayoutUtility.DefaultMaxSize, sumCross, 0, crossAxis);
     }
 
     /// <summary>

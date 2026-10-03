@@ -1,16 +1,15 @@
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
-using Sirenix.OdinInspector.Editor;
 using VGameFoundation.Scripts.UI;
 using System.Linq;
 
 [CustomEditor(typeof(UIPopupBaseView), true)]
-public class UIPopupBaseViewEditor : OdinEditor
+public class UIPopupBaseViewEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
+        this.DrawDefaultInspector();
         this.DrawCustomButtons();
     }
 

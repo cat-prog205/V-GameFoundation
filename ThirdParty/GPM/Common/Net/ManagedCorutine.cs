@@ -223,7 +223,7 @@ namespace Gpm.Common
 
                 try
                 {
-                    manager = GameObject.FindFirstObjectByType<ManagedCoroutineInstance>();
+                    manager = GameObject.FindAnyObjectByType<ManagedCoroutineInstance>();
                 }
                 catch
                 {

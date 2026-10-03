@@ -32,7 +32,7 @@ namespace VGameFoundation.Scripts.UI
             this.gameAssets          = gameAssets;
             this.dependencyContainer = dependencyContainer;
             
-            this.screenManagerHelper = Object.FindFirstObjectByType<ScreenManagerHelper>();
+            this.screenManagerHelper = Object.FindAnyObjectByType<ScreenManagerHelper>();
             
             this.signalBus.Subscribe<OnOpenScreenUI>(OnOpenScreenUIHandler);
             this.signalBus.Subscribe<OnCloseScreenUI>(OnCloseScreenUIHandler);

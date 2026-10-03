@@ -68,7 +68,7 @@ namespace VGameFoundation.Script.Services.MobiCommon.Vibration
                 LogService.Log($"[VibrationService] Advanced Requirements: {DeviceCapabilities.meetsAdvancedRequirements}");
             }
 #else
-            if (_debugMode)
+            if (this.debugMode)
             {
                 Debug.Log("[VibrationService] NiceVibrations not available. Please import the package.");
             }

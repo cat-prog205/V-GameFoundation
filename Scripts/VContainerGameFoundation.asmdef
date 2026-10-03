@@ -12,11 +12,11 @@
         "Unity.ResourceManager",
         "UniTask.DOTween",
         "DOTween.Modules",
-        "Google.Play.Review",
-        "Google.Play.Common",
         "Lofelt.NiceVibrations",
         "I2Localization.Scripts",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "R3.Unity",
+        "UnityEditorHomeMade.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

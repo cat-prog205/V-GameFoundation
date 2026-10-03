@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 
 using UnityEditor.IMGUI.Controls;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
 
 namespace Gpm.CacheStorage
 {

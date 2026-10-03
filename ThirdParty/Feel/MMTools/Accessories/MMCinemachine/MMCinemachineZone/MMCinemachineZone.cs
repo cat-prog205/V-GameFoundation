@@ -100,7 +100,7 @@ namespace MoreMountains.Tools
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
 		protected static void InitializeStatics()
 		{
-			foreach (var zone in FindObjectsByType<MMCinemachineZone>(FindObjectsSortMode.None))
+			foreach (var zone in FindObjectsByType<MMCinemachineZone>())
 			{
 				zone.Awake();
 			}

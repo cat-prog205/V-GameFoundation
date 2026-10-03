@@ -1,7 +1,7 @@
 ﻿namespace VGameFoundation.Script.Services.Localization
 {
-    using Sirenix.OdinInspector;
     using TMPro;
+    using UnityEditorHomeMade;
     using UnityEngine;
     using VGameFoundation.Scripts.Utilities.LogService;
 
@@ -14,7 +14,7 @@
         private string        lastKey;
         private object[]      lastArgs;
         
-        [ShowInInspector]
+        [SerializeField]
         [ReadOnly]
         private string defaultMat;
 

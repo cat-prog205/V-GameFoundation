@@ -23,18 +23,15 @@ namespace VGameFoundation.Scripts.Services.TransitionService
 
         public override UniTask Show(float duration, Action onComplete)
         {
-#if UNITASK_DOTWEEN_SUPPORT
             this.SetVisualState(false);
 
             return this.circleTransform.DOSizeDelta(new Vector2(this.minSize, this.minSize), duration)
                 .SetEase(Ease.OutQuad).SetUpdate(true)
                 .OnComplete(() => onComplete?.Invoke()).ToUniTask();
-#endif
         }
 
         public override UniTask Hide(float duration, Action onComplete)
         {
-#if UNITASK_DOTWEEN_SUPPORT
             this.SetVisualState(true);
 
             return this.circleTransform.DOSizeDelta(new Vector2(this.maxSize, this.maxSize), duration)
@@ -44,7 +41,6 @@ namespace VGameFoundation.Scripts.Services.TransitionService
                     this.ResetState();
                     onComplete?.Invoke();
                 }).ToUniTask();
-#endif
         }
     }
 }

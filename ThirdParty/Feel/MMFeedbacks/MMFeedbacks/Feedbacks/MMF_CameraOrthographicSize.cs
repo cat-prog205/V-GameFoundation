@@ -108,10 +108,10 @@ namespace MoreMountains.Feedbacks
 			#endif
 			
 			#if MMCINEMACHINE 
-				CinemachineVirtualCamera virtualCamera = (CinemachineVirtualCamera)Object.FindObjectOfType(typeof(CinemachineVirtualCamera));
+				CinemachineVirtualCamera virtualCamera = (CinemachineVirtualCamera)Object.FindAnyObjectByType(typeof(CinemachineVirtualCamera));
 				virtualCameraFound = (virtualCamera != null);
 			#elif MMCINEMACHINE3
-				CinemachineCamera virtualCamera = (CinemachineCamera)Object.FindObjectOfType(typeof(CinemachineCamera));
+				CinemachineCamera virtualCamera = (CinemachineCamera)Object.FindAnyObjectByType(typeof(CinemachineCamera));
 				virtualCameraFound = (virtualCamera != null);
 			#endif
 			

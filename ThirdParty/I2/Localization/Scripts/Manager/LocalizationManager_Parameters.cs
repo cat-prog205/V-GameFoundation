@@ -25,7 +25,7 @@ namespace I2.Loc
 
         public static void AutoLoadGlobalParamManagers()
         {
-            foreach (var manager in Object.FindObjectsByType<LocalizationParamsManager>(FindObjectsSortMode.None))
+            foreach (var manager in Object.FindObjectsByType<LocalizationParamsManager>())
             {
                 if (manager._IsGlobalManager && !ParamManagers.Contains(manager))
                 {

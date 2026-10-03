@@ -1,40 +1,29 @@
 namespace VGameFoundation.Editor.LocalData
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using Newtonsoft.Json;
-    using Sirenix.OdinInspector.Editor;
-    using Sirenix.Utilities.Editor;
     using UnityEditor;
+    using UnityEditorHomeMade;
     using UnityEngine;
     using VGameFoundation.DI;
     using VGameFoundation.Scripts.Services.LocalData;
     using VGameFoundation.Scripts.Utilities.Extension;
 
-    public class LocalDataEditor : EditorWindow
+    [ToolEntry("Local Data", category: "VGameFoundation", keywords: "save json user data")]
+    public class LocalDataEditor : EdWindowBase
     {
         private static readonly JsonSerializerSettings JsonSetting = HandleUserDataServices.JsonSetting;
 
-        private static readonly Color LoadColor     = new(0.32f, 0.72f, 0.62f);
-        private static readonly Color SaveColor     = new(0.38f, 0.70f, 0.42f);
-        private static readonly Color SyncColor     = new(0.40f, 0.62f, 0.92f);
-        private static readonly Color DefaultColor  = new(0.45f, 0.58f, 0.88f);
-        private static readonly Color ValidateColor = new(0.92f, 0.72f, 0.32f);
-        private static readonly Color FolderColor   = new(0.62f, 0.66f, 0.74f);
-        private static readonly Color ClearColor    = new(0.86f, 0.38f, 0.38f);
-        private static readonly Color HeaderBg      = new(0.16f, 0.17f, 0.20f);
+        [SerializeField] private EdSearchField search = new();
 
         private List<ILocalData> localData = new();
-        private readonly Dictionary<ILocalData, PropertyTree> trees = new();
-        private readonly Dictionary<string, bool> expandedByKey = new();
-
         private IUserDataStorage storage;
-        private Vector2          scroll;
-        private string           search          = string.Empty;
         private bool             defaultExpanded = true;
-        private string           status          = "Load data to inspect saved files.";
 
         private IUserDataStorage Storage => this.storage ??= UserDataStorages.CreateDefault();
 
@@ -47,230 +36,118 @@ namespace VGameFoundation.Editor.LocalData
             window.minSize = new Vector2(520, 420);
         }
 
-        private void OnGUI()
+        protected override void OnToolbarGUI()
         {
-            this.DrawHeader();
-            this.DrawPrimaryActions();
-            this.DrawSecondaryActions();
-            this.DrawSearchBar();
-            this.DrawList();
-            this.DrawFooter();
+            if (GUILayout.Button("Load", EditorStyles.toolbarButton, GUILayout.Width(48)))
+                this.LoadLocalData();
 
-            if (GUI.changed) this.Repaint();
-        }
+            if (GUILayout.Button("Sync Runtime", EditorStyles.toolbarButton, GUILayout.Width(92)))
+                this.SyncWithRuntime();
 
-        private void OnDestroy()
-        {
-            this.DisposeTrees();
-        }
-
-        private void DrawHeader()
-        {
-            var rect = EditorGUILayout.BeginVertical();
-            EditorGUI.DrawRect(rect, HeaderBg);
-
-            GUILayout.Space(10);
-            using (new EditorGUILayout.HorizontalScope())
+            using (new EditorGUI.DisabledScope(this.localData.Count == 0))
             {
-                GUILayout.Space(12);
-                GUILayout.Label("Local Data", EditorStyles.boldLabel);
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(this.localData.Count == 0 ? "No entries loaded" : $"{this.localData.Count} entries", EditorStyles.miniLabel);
-                GUILayout.Space(12);
+                if (GUILayout.Button("Expand All", EditorStyles.toolbarButton, GUILayout.Width(80)))
+                    this.SetAllExpanded(true);
+
+                if (GUILayout.Button("Collapse All", EditorStyles.toolbarButton, GUILayout.Width(88)))
+                    this.SetAllExpanded(false);
             }
 
-            GUILayout.Space(8);
-            EditorGUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            this.search.OnToolbarGUI(200f);
         }
 
-        private void DrawPrimaryActions()
+        protected override void OnBodyGUI()
         {
-            GUILayout.Space(8);
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.Space(10);
-                this.ActionButton("Load", "Read saved files from disk", LoadColor, this.LoadLocalData);
-                this.ActionButton("Save", "Write the list below back to disk", SaveColor, this.SaveLocalData);
-                this.ActionButton("Sync Runtime", "Copy live instances from Play Mode", SyncColor, this.SyncWithRuntime);
-                GUILayout.Space(10);
-            }
-        }
-
-        private void DrawSecondaryActions()
-        {
-            GUILayout.Space(4);
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.Space(10);
-                this.ActionButton("Create Defaults", "Init every type and write it to disk", DefaultColor, this.CreateDefaultLocalData);
-                this.ActionButton("Validate", "Check duplicated keys and missing [LocalDataKey]", ValidateColor, this.ValidateLocalData);
-                this.ActionButton("Open Folder", "Reveal the save directory in Explorer", FolderColor, this.OpenSaveFolder);
-                this.ActionButton("Clear", "Delete every save file, including backups", ClearColor, this.ClearLocalData);
-                GUILayout.Space(10);
-            }
-        }
-
-        private void DrawSearchBar()
-        {
-            GUILayout.Space(10);
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.Space(10);
-                GUILayout.Label("Search", GUILayout.Width(48));
-                this.search = EditorGUILayout.TextField(this.search, EditorStyles.toolbarSearchField);
-
-                using (new EditorGUI.DisabledScope(this.localData.Count == 0))
-                {
-                    if (GUILayout.Button("Expand All", EditorStyles.toolbarButton, GUILayout.Width(88)))
-                    {
-                        this.defaultExpanded = true;
-                        this.expandedByKey.Clear();
-                    }
-
-                    if (GUILayout.Button("Collapse All", EditorStyles.toolbarButton, GUILayout.Width(96)))
-                    {
-                        this.defaultExpanded = false;
-                        this.expandedByKey.Clear();
-                    }
-                }
-
-                GUILayout.Space(10);
-            }
-        }
-
-        private void DrawList()
-        {
-            GUILayout.Space(8);
-            this.scroll = EditorGUILayout.BeginScrollView(this.scroll);
-
             var visible = this.localData.Where(this.MatchesSearch).ToList();
             if (this.localData.Count == 0)
             {
-                    DrawEmptyState("Nothing loaded yet.\nPress Load to inspect the save folder, or Create Defaults to seed it.");
-            }
-            else if (visible.Count == 0)
-            {
-                    DrawEmptyState($"No entries match \"{this.search}\".");
-            }
-            else
-            {
-                foreach (var data in visible) this.DrawEntry(data);
+                EditorGUILayout.HelpBox(
+                    "Nothing loaded yet. Press Load to inspect the save folder, or Create Defaults to seed it.",
+                    MessageType.Info);
+                return;
             }
 
-            EditorGUILayout.EndScrollView();
+            if (visible.Count == 0)
+            {
+                EditorGUILayout.HelpBox($"No entries match \"{this.search.Query}\".", MessageType.Info);
+                return;
+            }
+
+            foreach (var data in visible) this.DrawEntry(data);
         }
+
+        protected override void OnFooterGUI()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (EdGUI.ConfirmButton("Save", GUILayout.Height(26), GUILayout.Width(72)))
+                    this.SaveLocalData();
+
+                if (GUILayout.Button("Create Defaults", GUILayout.Height(26)))
+                    this.CreateDefaultLocalData();
+
+                if (EdGUI.WarningButton("Validate", GUILayout.Height(26), GUILayout.Width(80)))
+                    this.ValidateLocalData();
+
+                if (GUILayout.Button("Open Folder", GUILayout.Height(26), GUILayout.Width(90)))
+                    this.OpenSaveFolder();
+
+                GUILayout.FlexibleSpace();
+
+                if (EdGUI.DangerButtonWithConfirm(
+                        "Clear",
+                        "This deletes every save file, including backups. Continue?",
+                        "Clear local data",
+                        GUILayout.Height(26),
+                        GUILayout.Width(64)))
+                    this.ClearLocalData();
+            }
+
+            EditorGUILayout.LabelField(
+                $"{this.VisibleCount}/{this.localData.Count} visible",
+                EditorStyles.miniLabel);
+        }
+
+        private int VisibleCount =>
+            string.IsNullOrWhiteSpace(this.search.Query)
+                ? this.localData.Count
+                : this.localData.Count(this.MatchesSearch);
 
         private void DrawEntry(ILocalData data)
         {
             var key   = HandleUserDataServices.KeyOf(data.GetType());
             var title = data.GetType().Name;
-            var open  = this.IsExpanded(key);
 
-            GUILayout.Space(2);
-            using (new EditorGUILayout.HorizontalScope())
+            using var section = new EdSection(title, PersistKey(key), rightText: key, defaultExpanded: this.defaultExpanded);
+            if (!section.Expanded) return;
+
+            LocalDataInspector.Draw(data);
+        }
+
+        private void SetAllExpanded(bool expanded)
+        {
+            this.defaultExpanded = expanded;
+            foreach (var data in this.localData)
             {
-                GUILayout.Space(10);
-
-                SirenixEditorGUI.BeginBox();
-
-                using (new EditorGUILayout.HorizontalScope())
-                {
-                    var nextOpen = SirenixEditorGUI.Foldout(open, title);
-                    if (nextOpen != open) this.expandedByKey[key] = nextOpen;
-                    open = nextOpen;
-
-                    GUILayout.FlexibleSpace();
-                    GUILayout.Label(key, EditorStyles.miniLabel);
-                }
-
-                if (open)
-                {
-                    GUILayout.Space(4);
-                    this.TreeOf(data).Draw(false);
-                    GUILayout.Space(4);
-                }
-
-                SirenixEditorGUI.EndBox();
-                GUILayout.Space(10);
+                var key = HandleUserDataServices.KeyOf(data.GetType());
+                EdPersist.SetBool("Section." + PersistKey(key), expanded);
             }
         }
 
-        private void DrawFooter()
-        {
-            GUILayout.Space(4);
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.Space(12);
-                var visible = string.IsNullOrWhiteSpace(this.search)
-                    ? this.localData.Count
-                    : this.localData.Count(this.MatchesSearch);
-
-                GUILayout.Label($"{visible}/{this.localData.Count} visible", EditorStyles.miniLabel);
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(this.status, EditorStyles.miniLabel);
-                GUILayout.Space(12);
-            }
-
-            GUILayout.Space(6);
-        }
-
-        private static void DrawEmptyState(string message)
-        {
-            GUILayout.FlexibleSpace();
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-                GUILayout.Label(message, EditorStyles.centeredGreyMiniLabel);
-                GUILayout.FlexibleSpace();
-            }
-
-            GUILayout.FlexibleSpace();
-        }
-
-        private void ActionButton(string label, string tooltip, Color color, Action action)
-        {
-            var previous = GUI.backgroundColor;
-            GUI.backgroundColor = color;
-            if (GUILayout.Button(new GUIContent(label, tooltip), GUILayout.Height(28))) action();
-            GUI.backgroundColor = previous;
-        }
+        private static string PersistKey(string key) => "localdata." + key;
 
         private bool MatchesSearch(ILocalData data)
         {
-            if (string.IsNullOrWhiteSpace(this.search)) return true;
-
             var type = data.GetType();
             var key  = HandleUserDataServices.KeyOf(type);
-            return type.Name.IndexOf(this.search, StringComparison.OrdinalIgnoreCase) >= 0
-                || key.IndexOf(this.search, StringComparison.OrdinalIgnoreCase) >= 0;
-        }
-
-        private bool IsExpanded(string key)
-        {
-            return this.expandedByKey.TryGetValue(key, out var expanded) ? expanded : this.defaultExpanded;
-        }
-
-        private PropertyTree TreeOf(ILocalData data)
-        {
-            if (this.trees.TryGetValue(data, out var tree)) return tree;
-
-            tree = PropertyTree.Create(data);
-            this.trees[data] = tree;
-            return tree;
+            return this.search.MatchesAny(type.Name, key);
         }
 
         private void ReplaceData(List<ILocalData> data, bool expand)
         {
-            this.DisposeTrees();
             this.localData       = data ?? new List<ILocalData>();
             this.defaultExpanded = expand;
-            this.expandedByKey.Clear();
-        }
-
-        private void DisposeTrees()
-        {
-            foreach (var tree in this.trees.Values) tree.Dispose();
-            this.trees.Clear();
         }
 
         private void OpenSaveFolder()
@@ -279,21 +156,21 @@ namespace VGameFoundation.Editor.LocalData
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
             EditorUtility.RevealInFinder(path);
-            this.status = path;
+            this.SetStatus(path);
         }
 
         private void SyncWithRuntime()
         {
             if (!Application.isPlaying)
             {
-                this.status = "Sync Runtime only works in Play Mode.";
-                Debug.LogError(this.status);
+                this.SetStatus("Sync Runtime only works in Play Mode.", MessageType.Error);
+                Debug.LogError("Sync Runtime only works in Play Mode.");
                 this.ReplaceData(null, true);
                 return;
             }
 
             this.ReplaceData(DataTypes.Select(type => this.GetCurrentContainer().Resolve(type)).OfType<ILocalData>().ToList(), true);
-            this.status = $"Synced {this.localData.Count} runtime instances.";
+            this.SetStatus($"Synced {this.localData.Count} runtime instances.");
         }
 
         private async void LoadLocalData()
@@ -306,15 +183,14 @@ namespace VGameFoundation.Editor.LocalData
                 .ToList();
 
             this.ReplaceData(loaded, true);
-            this.status = $"Loaded {this.localData.Count} entries from disk.";
-            this.Repaint();
+            this.SetStatus($"Loaded {this.localData.Count} entries from disk.");
         }
 
         private async void SaveLocalData()
         {
             if (this.localData.Count == 0)
             {
-                this.status = "Nothing to save.";
+                this.SetStatus("Nothing to save.", MessageType.Warning);
                 return;
             }
 
@@ -322,8 +198,7 @@ namespace VGameFoundation.Editor.LocalData
                 .Select(data => (HandleUserDataServices.KeyOf(data.GetType()), JsonConvert.SerializeObject(data, JsonSetting)))
                 .ToArray());
 
-            this.status = $"Saved {this.localData.Count} entries.";
-            this.Repaint();
+            this.SetStatus($"Saved {this.localData.Count} entries.");
         }
 
         private async void CreateDefaultLocalData()
@@ -335,21 +210,14 @@ namespace VGameFoundation.Editor.LocalData
                 .ToArray());
 
             this.ReplaceData(created, true);
-            this.status = $"Wrote {this.localData.Count} default entries.";
-            this.Repaint();
+            this.SetStatus($"Wrote {this.localData.Count} default entries.");
         }
 
         private async void ClearLocalData()
         {
-            if (!EditorUtility.DisplayDialog("Clear local data", "This deletes every save file, including backups. Continue?", "Delete", "Cancel"))
-            {
-                return;
-            }
-
             await this.Storage.DeleteAsync(DataTypes.Select(HandleUserDataServices.KeyOf).ToArray());
             this.ReplaceData(null, true);
-            this.status = "Cleared all local data.";
-            this.Repaint();
+            this.SetStatus("Cleared all local data.", MessageType.Warning);
         }
 
         private void ValidateLocalData()
@@ -370,9 +238,10 @@ namespace VGameFoundation.Editor.LocalData
                 Debug.LogWarning($"{type.FullName} has no [LocalDataKey], renaming or moving it will lose player data");
             }
 
-            this.status = duplicates.Length == 0 && missingKey.Length == 0
-                ? "Keys are valid."
-                : $"{duplicates.Length} duplicate key(s), {missingKey.Length} missing [LocalDataKey].";
+            if (duplicates.Length == 0 && missingKey.Length == 0)
+                this.SetStatus("Keys are valid.");
+            else
+                this.SetStatus($"{duplicates.Length} duplicate key(s), {missingKey.Length} missing [LocalDataKey].", MessageType.Warning);
         }
 
         private static ILocalData Deserialize(Type type, string[] candidates)
@@ -400,6 +269,188 @@ namespace VGameFoundation.Editor.LocalData
             if (instance is IMigratableLocalData migratable) migratable.SavedVersion = migratable.LatestVersion;
 
             return instance;
+        }
+    }
+
+    internal static class LocalDataInspector
+    {
+        private const int MaxDepth = 6;
+
+        public static void Draw(object target)
+        {
+            if (target == null)
+            {
+                EditorGUILayout.HelpBox("null", MessageType.None);
+                return;
+            }
+
+            DrawObject(target, 0);
+        }
+
+        private static void DrawObject(object target, int depth)
+        {
+            if (depth > MaxDepth)
+            {
+                EditorGUILayout.LabelField("...");
+                return;
+            }
+
+            foreach (var field in EnumerateFields(target.GetType()))
+            {
+                EditorGUI.BeginChangeCheck();
+                var value   = field.GetValue(target);
+                var next    = DrawValue(ObjectNames.NicifyVariableName(field.Name), value, field.FieldType, depth);
+                if (!EditorGUI.EndChangeCheck()) continue;
+
+                try
+                {
+                    field.SetValue(target, next);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Cannot write {field.DeclaringType?.Name}.{field.Name}: {e.Message}");
+                }
+            }
+        }
+
+        private static IEnumerable<FieldInfo> EnumerateFields(Type type)
+        {
+            return type.GetRecursiveFields()
+                .Where(field => !field.IsStatic
+                    && !field.IsDefined(typeof(NonSerializedAttribute), inherit: true)
+                    && !field.Name.Contains("k__BackingField", StringComparison.Ordinal));
+        }
+
+        private static object DrawValue(string label, object value, Type type, int depth)
+        {
+            if (type == typeof(bool)) return EditorGUILayout.Toggle(label, value is true);
+            if (type == typeof(int)) return EditorGUILayout.IntField(label, value is int i ? i : 0);
+            if (type == typeof(long)) return EditorGUILayout.LongField(label, value is long l ? l : 0);
+            if (type == typeof(float)) return EditorGUILayout.FloatField(label, value is float f ? f : 0f);
+            if (type == typeof(double)) return EditorGUILayout.DoubleField(label, value is double d ? d : 0d);
+            if (type == typeof(string)) return EditorGUILayout.TextField(label, value as string ?? string.Empty);
+            if (type.IsEnum)
+            {
+                var enumValue = value == null ? Enum.GetValues(type).GetValue(0) : value;
+                return EditorGUILayout.EnumPopup(label, (Enum)enumValue);
+            }
+
+            if (type == typeof(Vector2)) return EditorGUILayout.Vector2Field(label, value is Vector2 v2 ? v2 : default);
+            if (type == typeof(Vector3)) return EditorGUILayout.Vector3Field(label, value is Vector3 v3 ? v3 : default);
+            if (type == typeof(Vector4)) return EditorGUILayout.Vector4Field(label, value is Vector4 v4 ? v4 : default);
+            if (type == typeof(Color)) return EditorGUILayout.ColorField(label, value is Color c ? c : default);
+            if (typeof(UnityEngine.Object).IsAssignableFrom(type))
+                return EditorGUILayout.ObjectField(label, value as UnityEngine.Object, type, true);
+
+            if (typeof(IDictionary).IsAssignableFrom(type))
+                return DrawDictionary(label, value as IDictionary, type, depth);
+
+            if (typeof(IList).IsAssignableFrom(type) && type != typeof(string))
+                return DrawList(label, value as IList, type, depth);
+
+            if (type.IsClass || type.IsValueType)
+            {
+                var open = EditorGUILayout.Foldout(true, label, true);
+                if (!open) return value;
+
+                if (value == null)
+                {
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.PrefixLabel(label);
+                        if (GUILayout.Button("Create", GUILayout.Width(70)) && TryCreate(type, out var created))
+                            return created;
+                    }
+
+                    return null;
+                }
+
+                using (new EditorGUI.IndentLevelScope())
+                    DrawObject(value, depth + 1);
+
+                return value;
+            }
+
+            EditorGUILayout.LabelField(label, value?.ToString() ?? "null");
+            return value;
+        }
+
+        private static object DrawList(string label, IList list, Type type, int depth)
+        {
+            var open = EditorGUILayout.Foldout(true, $"{label} ({list?.Count ?? 0})", true);
+            if (!open) return list;
+
+            using var indent = new EditorGUI.IndentLevelScope();
+            if (list == null)
+            {
+                if (GUILayout.Button("Create list", GUILayout.Width(90)) && TryCreate(type, out var created))
+                    return created;
+                return null;
+            }
+
+            var elementType = GetElementType(type);
+            for (var i = 0; i < list.Count; i++)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    list[i] = DrawValue($"[{i}]", list[i], elementType, depth + 1);
+                    if (!list.IsFixedSize && EdGUI.XButton("Remove"))
+                    {
+                        list.RemoveAt(i);
+                        break;
+                    }
+                }
+            }
+
+            if (!list.IsFixedSize && elementType != null && GUILayout.Button("Add", GUILayout.Width(60)))
+            {
+                list.Add(elementType.IsValueType ? Activator.CreateInstance(elementType) : null);
+            }
+
+            return list;
+        }
+
+        private static object DrawDictionary(string label, IDictionary dictionary, Type type, int depth)
+        {
+            var open = EditorGUILayout.Foldout(true, $"{label} ({dictionary?.Count ?? 0})", true);
+            if (!open) return dictionary;
+
+            using var indent = new EditorGUI.IndentLevelScope();
+            if (dictionary == null)
+            {
+                if (GUILayout.Button("Create dictionary", GUILayout.Width(130)) && TryCreate(type, out var created))
+                    return created;
+                return null;
+            }
+
+            var args       = type.GetGenericArguments();
+            var valueType  = args.Length > 1 ? args[1] : typeof(object);
+            var keys       = dictionary.Keys.Cast<object>().ToList();
+            foreach (var key in keys)
+                dictionary[key] = DrawValue(key?.ToString() ?? "null", dictionary[key], valueType, depth + 1);
+
+            return dictionary;
+        }
+
+        private static Type GetElementType(Type type)
+        {
+            if (type.IsArray) return type.GetElementType();
+            if (type.IsGenericType) return type.GetGenericArguments()[0];
+            return typeof(object);
+        }
+
+        private static bool TryCreate(Type type, out object created)
+        {
+            try
+            {
+                created = Activator.CreateInstance(type);
+                return created != null;
+            }
+            catch
+            {
+                created = null;
+                return false;
+            }
         }
     }
 }

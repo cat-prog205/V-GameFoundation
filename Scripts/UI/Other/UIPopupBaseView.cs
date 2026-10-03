@@ -3,14 +3,15 @@ using UnityEngine;
 
 namespace VGameFoundation.Scripts.UI
 {
-    using Sirenix.OdinInspector;
+    using UnityEditorHomeMade;
 
     public class UIPopupBaseView : UIView
     {
-        [Header("Animation Modules")] [SerializeField] [InlineEditor(InlineEditorObjectFieldModes.Boxed)]
+        [Title("Animation Modules")]
+        [SerializeField]
         private UIAnimationModule openAnimation;
 
-        [SerializeField] [PropertySpace(SpaceAfter = 20)] [InlineEditor(InlineEditorObjectFieldModes.Boxed)]
+        [SerializeField]
         private UIAnimationModule closeAnimation;
 
         public override async UniTask Open()

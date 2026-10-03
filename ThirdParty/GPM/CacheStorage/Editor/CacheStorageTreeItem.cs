@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using UnityEditor.IMGUI.Controls;
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
 using System;
 using System.IO;
 

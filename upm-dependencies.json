@@ -1,0 +1,26 @@
+{
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.cysharp",
+        "jp.hadashikick",
+        "org.nuget"
+      ]
+    }
+  ],
+  "dependencies": {
+    "com.unity.addressables": "2.8.1",
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer",
+    "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+    "com.cysharp.messagepipe": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe",
+    "com.cysharp.messagepipe.vcontainer": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe.VContainer",
+    "com.cysharp.r3": "1.3.0",
+    "org.nuget.r3": "1.3.0",
+    "org.nuget.microsoft.bcl.timeprovider": "8.0.1",
+    "org.nuget.microsoft.bcl.asyncinterfaces": "8.0.0",
+    "org.nuget.sylvan.data.csv": "1.4.2"
+  }
+}

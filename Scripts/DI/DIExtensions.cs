@@ -14,14 +14,14 @@ namespace VGameFoundation.DI
         /// </summary>
         public static IDependencyContainer GetCurrentContainer()
         {
-            if (CurrentSceneContext == null) CurrentSceneContext = Object.FindFirstObjectByType<SceneScope>();
+            if (CurrentSceneContext == null) CurrentSceneContext = Object.FindAnyObjectByType<SceneScope>();
 
             return CurrentSceneContext.Container.Resolve<IDependencyContainer>();
         }
 
         public static IObjectResolver GetCurrentObjectResolver(this object _)
         {
-            if (CurrentSceneContext == null) CurrentSceneContext = Object.FindFirstObjectByType<SceneScope>();
+            if (CurrentSceneContext == null) CurrentSceneContext = Object.FindAnyObjectByType<SceneScope>();
 
             return CurrentSceneContext.Container;
         }
