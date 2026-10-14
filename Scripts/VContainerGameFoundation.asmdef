@@ -24,6 +24,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.google.play.review",
+            "expression": "",
+            "define": "GOOGLE_PLAY_REVIEW"
+        }
+    ],
     "noEngineReferences": false
 }

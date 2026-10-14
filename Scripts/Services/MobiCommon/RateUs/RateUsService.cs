@@ -7,7 +7,7 @@ namespace VGameFoundation.Script.Services.MobiCommon.RateUs
     using UnityEngine.iOS;
 #endif
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && GOOGLE_PLAY_REVIEW
     using Google.Play.Review;
     using VGameFoundation.Scripts.Utilities.LogService;
 #endif
@@ -15,7 +15,7 @@ namespace VGameFoundation.Script.Services.MobiCommon.RateUs
     {
         public static async void RequestReviewsAsync(Action afterRateAction = null)
         {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && GOOGLE_PLAY_REVIEW
             LogService.Log($"==> RequestReviews-----1 <==");
             var reviewManager = new ReviewManager();
 
