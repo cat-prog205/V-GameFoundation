@@ -8,7 +8,9 @@ namespace VGameFoundation.Scripts
     using VGameFoundation.DI;
     using VGameFoundation.Script.GameStateMachine;
     using VGameFoundation.Script.Services.CacheDataService;
+#if Unity_Localization
     using VGameFoundation.Script.Services.Localization;
+#endif
     using VGameFoundation.Script.Services.MobiCommon.Vibration;
     using VGameFoundation.Script.SoundService;
     using VGameFoundation.Scripts.Services.GameAsset;
