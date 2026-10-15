@@ -29,6 +29,9 @@ namespace BlueprintFlow.BlueprintReader.Converter.TypeConversion
         /// <inheritdoc />
         public override object ConvertFromString(string text, Type typeInfo)
         {
+            // Empty cell = the enum's default (0) value.
+            if (string.IsNullOrWhiteSpace(text)) return Enum.ToObject(typeInfo, 0);
+
             if (text != null)
                 if (this.enumNamesByAttributeNames.ContainsKey(text))
                     return Enum.Parse(typeInfo, this.enumNamesByAttributeNames[text]);
